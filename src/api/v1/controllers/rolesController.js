@@ -5,19 +5,31 @@ const jwt = require("jsonwebtoken");
 
 const { validationResult } = require("express-validator");
 
-rolesController.validations = (req, res, result) => {
+rolesController.validations = async (req, res, result) => {
   const errors = result(req);
   if (!errors.isEmpty()) {
-    return res
-      .status(404)
-      .json({ status: false, msg: "Validation Error Occured", data: errors });
+    return { success: false, errors };
   }
-  return true;
+  return { success: true };
 };
 
 rolesController.addRoles = async (req, res) => {
   try {
-    rolesController.validations(req, res, validationResult);
+    const validators = await rolesController.validations(
+      req,
+      res,
+      validationResult
+    );
+    if (!validators.success) {
+      console.log("hrllll");
+      return res
+        .status(404)
+        .json({
+          status: false,
+          msg: "Validation Error Occured",
+          data: validators.errors,
+        });
+    }
     const role = await tables.roles.create(req.body);
     if (role) {
       return res.status(200).json({
@@ -27,7 +39,7 @@ rolesController.addRoles = async (req, res) => {
       });
     }
   } catch (error) {
-    return res.status(404).json({
+    return res.status(500).json({
       status: false,
       msg: "Something went wrong",
       error: error.message,
