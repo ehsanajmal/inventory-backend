@@ -15,6 +15,7 @@ sequelize
     db.user = models.user(sequelize, DataTypes);
     db.group = models.group(sequelize, DataTypes);
     db.product = models.product(sequelize, DataTypes);
+    db.stock = models.stock(sequelize, DataTypes)
     // db.sequelize.sync({ force: true });
     db.sequelize.sync({ alert: true });
     console.log("Database is configured successfully");
