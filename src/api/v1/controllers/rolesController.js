@@ -21,7 +21,6 @@ rolesController.addRoles = async (req, res) => {
       validationResult
     );
     if (!validators.success) {
-      console.log("hrllll");
       return res
         .status(404)
         .json({
